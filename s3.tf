@@ -38,9 +38,9 @@ resource "null_resource" "create_local_populate_bucket_script" {
   }
 }
 
-# we could also have terraform make a script for creating and deleting the bucket
 resource "aws_s3_bucket" "react_bucket" {
-  bucket     = "${var.bucket_name}"
+  bucket = "${var.bucket_name}"
+  acl    = "public-read"
 
   policy = <<POLICY
 {
