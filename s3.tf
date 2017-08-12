@@ -2,10 +2,6 @@ provider "aws" {
   region = "us-east-1"
 }
 
-variable "bucket_name" {
-  default = "tf_react_bucket_for_terrafuzz"
-}
-
 data "template_file" "empty_bucket_script" {
   template = "${file("${path.module}/empty_bucket.tpl")}"
 
