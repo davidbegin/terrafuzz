@@ -2,6 +2,8 @@
 
 echo "It's TerraFuzz Time"
 
+terraform init
+
 # ./terrafuzz deploy
 terraform apply -var-file=variables.tfvars
 

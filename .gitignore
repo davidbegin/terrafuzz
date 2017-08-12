@@ -2,3 +2,4 @@
 *.tfstate.backup
 populate_bucket.sh
 empty_bucket.sh
+.terraform/
