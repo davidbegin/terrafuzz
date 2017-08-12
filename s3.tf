@@ -42,6 +42,23 @@ resource "aws_s3_bucket" "react_bucket" {
   bucket = "${var.bucket_name}"
   acl    = "public-read"
 
+
+  website {
+    index_document = "index.html"
+    error_document = "index.html"
+
+    routing_rules = <<EOF
+[{
+    "Condition": {
+        "KeyPrefixEquals": "docs/"
+    },
+    "Redirect": {
+        "ReplaceKeyPrefixWith": "documents/"
+    }
+}]
+EOF
+  }
+
   policy = <<POLICY
 {
   "Version": "2012-10-17",
