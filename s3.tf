@@ -14,13 +14,31 @@ data "template_file" "empty_bucket_script" {
   }
 }
 
-resource "null_resource" "local" {
+data "template_file" "populate_bucket_script" {
+  template = "${file("${path.module}/populate_bucket.tpl")}"
+
+  vars {
+    bucket_name  = "${aws_s3_bucket.react_bucket.bucket}"
+  }
+}
+
+resource "null_resource" "create_local_empty_bucket_script" {
   triggers {
     template = "${data.template_file.empty_bucket_script.rendered}"
   }
 
   provisioner "local-exec" {
     command = "echo \"${data.template_file.empty_bucket_script.rendered}\" > empty_bucket.sh; chmod +x empty_bucket.sh"
+  }
+}
+
+resource "null_resource" "create_local_populate_bucket_script" {
+  triggers {
+    template = "${data.template_file.populate_bucket_script.rendered}"
+  }
+
+  provisioner "local-exec" {
+    command = "echo \"${data.template_file.populate_bucket_script.rendered}\" > populate_bucket.sh; chmod +x populate_bucket.sh"
   }
 }
 
