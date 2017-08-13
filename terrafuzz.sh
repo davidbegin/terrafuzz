@@ -20,8 +20,9 @@ function setup_terraform {
 }
 
 function apply_terraform_changes {
-  OUTPUT="$(terraform apply -var-file=variables.tfvars)"
-  WEBSITE=`echo ${OUTPUT} | awk -F"website_endpoint" '{print $2}' | sed 's/^[ \t]*=[ \t]/http:\/\//' | tr -d '[:cntrl:]' | sed 's/\[0m$//'`
+  terraform apply -var-file=variables.tfvars
+  WEBSITE=`terraform output | awk -F"website_endpoint" '{print $2}' | sed 's/^[ \t]*=[ \t]/http:\/\//' | tr -d '[:cntrl:]' | sed 's/\[0m$//'`
+  echo $WEBSITE > website.txt
 }
 
 function greeting {
@@ -33,7 +34,7 @@ function goodbye {
 }
 
 function open_website {
-  open $WEBSITE
+  open $(cat website.txt)
 }
 
 function deploy {
@@ -64,3 +65,4 @@ case "$1" in
             echo $"Usage: $0 {apply|deploy|destroy|}"
             exit 1
 esac
+
