@@ -1,6 +1,8 @@
 #!/bin/bash
 
-function deploy {
+clear
+
+function upload_code_to_s3 {
   cd ..
   npm run build
   cd terrafuzz
@@ -18,29 +20,39 @@ function setup_terraform {
 }
 
 function apply_terraform_changes {
-  terraform apply -var-file=variables.tfvars
+  OUTPUT="$(terraform apply -var-file=variables.tfvars)"
+  WEBSITE=`echo ${OUTPUT} | awk -F"website_endpoint" '{print $2}' | sed 's/^[ \t]*=[ \t]/http:\/\//' | tr -d '[:cntrl:]' | sed 's/\[0m$//'`
 }
 
 function greeting {
-  echo "It's Terrafuzz Time"
+  printf "\n\t\033[1;4;36mIt's Terrafuzz Time\033[0m\n"
 }
 
 function goodbye {
-  echo "You've been Terrafuzzed"
+  printf "\n\033[1;33m...you've been Terrafuzzed\033[0m\n"
+}
+
+function open_website {
+  open $WEBSITE
+}
+
+function deploy {
+  upload_code_to_s3
+  goodbye
+  open_website
 }
 
 case "$1" in
         apply)
             greeting
+            setup_terraform
             apply_terraform_changes
             deploy
-            goodbye
             ;;
          
-        deploy)
+         deploy)
             greeting
             deploy
-            goodbye
             ;;
          
         destroy)
